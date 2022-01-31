@@ -14,17 +14,17 @@ const UserSchema = new Mongoose.Schema(
   {
     firstName: {
       type: String,
-      required: true,
+      required: [true, "You must provide your first name."],
       trim: true,
     },
     lastName: {
       type: String,
-      required: true,
+      required: [true, "You must provide your last name."],
       trim: true,
     },
     email: {
       type: String,
-      required: true,
+      required: [true, "You must provide your email address."],
       trim: true,
       unique: true,
       lowercase: true,
@@ -37,7 +37,7 @@ const UserSchema = new Mongoose.Schema(
 
     passwordHash: {
       type: String,
-      required: true,
+      required: [true, "You must provide a password"],
     },
     isActive: {
       type: Boolean,
@@ -125,30 +125,26 @@ class User {
     state,
     zipCode
   ) {
-    // CREATE THE USER IN THE DATABASE.
-    const userModel = new UserModel({
-      firstName,
-      lastName,
-      email,
-      passwordHash,
-      address,
-      city,
-      state,
-      zipCode,
-    });
-
     try {
+      // CREATE THE USER IN THE DATABASE.
+      const userModel = new UserModel({
+        firstName,
+        lastName,
+        email,
+        passwordHash,
+        address,
+        city,
+        state,
+        zipCode,
+      });
       await userModel.save();
+      // RETURN THE CREATED INSTANCE.
+      const user = new User(userModel);
+      return user;
     } catch (error) {
-      console.log(
-        "An error occurred while attempting to create a user.",
-        error
-      );
+      console.log("An error occurred while attempting to create a user.");
+      return undefined;
     }
-
-    // RETURN THE CREATED INSTANCE.
-    const user = new User(userModel);
-    return user;
   }
 
   /**
@@ -445,7 +441,7 @@ class User {
    * @param {String} name The state to set.
    * @return {Boolean} True if the state was set, false otherwise.
    * @author Ethan Cannelongo
-   * @date   01/14/2022
+   * @date   01/30/2022
    */
   setState(state) {
     this.state = state;
@@ -457,7 +453,7 @@ class User {
    * @param {String} name The zipCode to set.
    * @return {Boolean} True if the zipCode was set, false otherwise.
    * @author Ethan Cannelongo
-   * @date   01/14/2022
+   * @date   01/30/2022
    */
   setZipCode(zipCode) {
     this.zipCode = zipCode;

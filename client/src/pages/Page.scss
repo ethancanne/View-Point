@@ -1,0 +1,14 @@
+.page {
+  animation: page-rise 0.3s ease-in-out;
+  background-color: blanchedalmond;
+  height: 100%;
+}
+
+@keyframes page-rise {
+  0% {
+    margin-top: 3em;
+  }
+  100% {
+    margin-top: 0;
+  }
+}

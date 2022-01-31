@@ -4,7 +4,7 @@ const Configuration = require("../../Configuration.js");
 const User = require("../Models/User.js");
 const Validator = require("../Validator");
 const ResponseMessages = require("../responses/ResponseMessages");
-
+const Routes = require("../routes/Routes");
 /**
  * The router used to serve account-related requests.
  * @author Ethan Cannelongo
@@ -21,34 +21,35 @@ class UserRouter {
   static serveRoutes(server, authenticator) {
     // This is used to check if an authentication token is valid. If it is valid, a new token is generated so that the user can have persistent logins.
     server.get(
-      "/users/update",
+      Routes.User.UpdateAuthenticationToken,
       authenticator.protectRoute(),
       UserRouter.updateAuthenticationToken
     );
 
     //This is used to get the currently logged in user
     server.get(
-      "/users/me",
+      Routes.User.LoggedInUser,
       authenticator.protectRoute(),
       UserRouter.getLoggedInUser
     );
 
     //POST
     // This is used to create accounts.
-    server.post("/users", UserRouter.createAccount);
+    server.post(Routes.User.CreateAccount, UserRouter.createAccount);
+
     // This is used to log users in.
-    server.post("/users/login", UserRouter.login);
+    server.post(Routes.User.Login, UserRouter.login);
 
     //PATCH
     // This is used to update the user's information
     server.patch(
-      "/users/me",
+      Routes.User.LoggedInUser,
       authenticator.protectRoute(),
       UserRouter.updateInfo
     );
 
     server.patch(
-      "/users/me/password",
+      Routes.User.LoggedInUserPassword,
       authenticator.protectRoute(),
       UserRouter.updatePassword
     );
@@ -56,7 +57,7 @@ class UserRouter {
     //DELETE
     // This is used to delete the user's account
     server.delete(
-      "/users/me",
+      Routes.User.LoggedInUser,
       authenticator.protectRoute(),
       UserRouter.deleteAccount
     );
@@ -119,8 +120,8 @@ class UserRouter {
       const existingUser = await User.getByEmail(req.body.email);
       const userAlreadyExists = Validator.isDefined(existingUser);
       if (userAlreadyExists) {
-        return res.json({
-          message: ResponseMessages.User.UserAlreadyExists,
+        return res.send({
+          error: ResponseMessages.User.UserAlreadyExists,
         });
       }
 
@@ -136,20 +137,27 @@ class UserRouter {
         req.body.zipCode
       );
 
-      const { authenticationToken, authenticationTokenExpirationDate } =
-        Authenticator.issueAuthenticationToken(user);
+      const userSuccessfullyCreated = Validator.isDefined(user);
+      if (userSuccessfullyCreated) {
+        const { authenticationToken, authenticationTokenExpirationDate } =
+          Authenticator.issueAuthenticationToken(user);
 
-      // SEND THE RESPONSE.
-      user.removeSensitiveAttributes();
-      return res.send({
-        authenticationToken: authenticationToken,
-        authenticationTokenExpirationDate: authenticationTokenExpirationDate,
-        message: ResponseMessages.User.SuccessCreateUser,
-        user: user,
-      });
+        // SEND THE RESPONSE.
+        user.removeSensitiveAttributes();
+        return res.send({
+          authenticationToken: authenticationToken,
+          authenticationTokenExpirationDate: authenticationTokenExpirationDate,
+          message: ResponseMessages.User.SuccessCreateUser,
+          user: user,
+        });
+      } else {
+        return res.send({
+          error: ResponseMessages.User.ErrorCreateAccount,
+        });
+      }
     } catch (e) {
-      return res.status(500).send({
-        message: ResponseMessages.User.ErrorCreateAccount,
+      return res.send({
+        error: ResponseMessages.User.ErrorCreateAccount,
         desc: e,
       });
     }
@@ -172,9 +180,7 @@ class UserRouter {
       // CHECK IF A USER WITH THE EMAIL ADDRESS EXISTS.
       const userWasNotFound = Validator.isUndefined(user);
       if (userWasNotFound || user.isActive === false) {
-        return res
-          .status(400)
-          .send({ error: ResponseMessages.User.UserNotFound });
+        return res.send({ error: ResponseMessages.User.UserNotFound });
       }
 
       // CHECK IF THE PASSWORD IS CORRECT.
@@ -200,13 +206,13 @@ class UserRouter {
         });
       } else {
         // IF THE PASSWORD IS INCORRECT, THE LOGIN ATTEMPT SHOULD FAIL.
-        return res.status(400).send({
-          message: ResponseMessages.User.IncorrectPassword,
+        return res.send({
+          error: ResponseMessages.User.IncorrectPassword,
         });
       }
     } catch (e) {
-      return res.status(500).send({
-        message: ResponseMessages.User.UserErrorLogin,
+      return res.send({
+        error: ResponseMessages.User.UserErrorLogin,
         desc: e,
       });
     }
@@ -242,9 +248,7 @@ class UserRouter {
     );
 
     if (!isVaildUpdates) {
-      return res
-        .status(400)
-        .send({ error: ResponseMessages.User.UserInvalidUpdates });
+      return res.send({ error: ResponseMessages.User.UserInvalidUpdates });
     }
     updates.forEach(update => {
       switch (update) {
@@ -281,9 +285,10 @@ class UserRouter {
         user: req.user,
       });
     } catch (e) {
-      return res
-        .status(400)
-        .send({ error: ResponseMessages.User.UserErrorUpdating, desc: e });
+      return res.send({
+        error: ResponseMessages.User.UserErrorUpdating,
+        desc: e,
+      });
     }
   }
 
@@ -304,9 +309,7 @@ class UserRouter {
     );
 
     if (!currentPasswordIsCorrect) {
-      return res
-        .status(400)
-        .send({ error: ResponseMessages.User.IncorrectPassword });
+      return res.send({ error: ResponseMessages.User.IncorrectPassword });
     }
 
     req.user.setPassword(Authenticator.hashPassword(req.body.newPassword));
@@ -315,9 +318,7 @@ class UserRouter {
       const userWasSaved = await req.user.save();
 
       if (!userWasSaved) {
-        return res
-          .status(400)
-          .send({ error: ResponseMessages.UserErrorUpdating });
+        return res.send({ error: ResponseMessages.UserErrorUpdating });
       }
 
       res.send({
@@ -325,9 +326,7 @@ class UserRouter {
         user: req.user,
       });
     } catch (e) {
-      res
-        .status(400)
-        .send({ error: ResponseMessages.UserErrorUpdating, desc: e });
+      res.send({ error: ResponseMessages.UserErrorUpdating, desc: e });
     }
   }
 
@@ -348,9 +347,7 @@ class UserRouter {
     );
 
     if (!currentPasswordIsCorrect) {
-      return res
-        .status(400)
-        .send({ error: ResponseMessages.User.IncorrectPassword });
+      return res.send({ error: ResponseMessages.User.IncorrectPassword });
     }
 
     try {
@@ -368,9 +365,10 @@ class UserRouter {
         user: req.user,
       });
     } catch (e) {
-      return res
-        .status(400)
-        .send({ error: ResponseMessages.User.UserErrorDeleted, desc: e });
+      return res.send({
+        error: ResponseMessages.User.UserErrorDeleted,
+        desc: e,
+      });
     }
   }
 }

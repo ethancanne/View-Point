@@ -1,2 +1,19 @@
-node_modules
+# Logs
+*.log
+npm-debug.log*
+
+# Ignore DS_Store.
+.DS_Store
+
+# Dependency directories
+node_modules/
+package-lock.json
+
+# Optional npm cache directory
+.npm
+
+# dotenv environment variables file
 .env
+
+# RSA keys
+*.pem
