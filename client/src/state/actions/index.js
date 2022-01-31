@@ -1,4 +1,8 @@
-import { userConstants, notificationConstants } from "../constants/Constants";
+import {
+  userConstants,
+  notificationConstants,
+  popupConstants,
+} from "../constants/Constants";
 
 //USER REDUCERS
 export const signIn = user => {
@@ -10,6 +14,12 @@ export const signIn = user => {
 export const signOut = () => {
   return {
     type: userConstants.SIGN_OUT,
+  };
+};
+export const editAccount = user => {
+  return {
+    type: userConstants.EDIT_ACCOUNT,
+    payload: user,
   };
 };
 
@@ -24,5 +34,18 @@ export const showErrorNotification = message => {
 export const hideNotification = () => {
   return {
     type: notificationConstants.HIDE_NOTIFICATION,
+  };
+};
+
+//POPUP REDUCER
+export const showEditAccountPopup = () => {
+  return {
+    type: popupConstants.SHOW_EDIT_ACCOUNT_POPUP,
+  };
+};
+
+export const closePopup = () => {
+  return {
+    type: popupConstants.CLOSE_POPUP,
   };
 };

@@ -143,12 +143,11 @@ class UserRouter {
           Authenticator.issueAuthenticationToken(user);
 
         // SEND THE RESPONSE.
-        user.removeSensitiveAttributes();
         return res.send({
           authenticationToken: authenticationToken,
           authenticationTokenExpirationDate: authenticationTokenExpirationDate,
           message: ResponseMessages.User.SuccessCreateUser,
-          user: user,
+          user: user.removeSensitiveAttributes(),
         });
       } else {
         return res.send({
@@ -179,10 +178,9 @@ class UserRouter {
 
       // CHECK IF A USER WITH THE EMAIL ADDRESS EXISTS.
       const userWasNotFound = Validator.isUndefined(user);
-      if (userWasNotFound || user.isActive === false) {
+      if (userWasNotFound || user.getIsActive() === false) {
         return res.send({ error: ResponseMessages.User.UserNotFound });
       }
-
       // CHECK IF THE PASSWORD IS CORRECT.
       const passwordIsCorrect = Authenticator.verifyPassword(
         req.body.password,
@@ -196,13 +194,11 @@ class UserRouter {
         const { authenticationToken, authenticationTokenExpirationDate } =
           Authenticator.issueAuthenticationToken(user);
 
-        user.removeSensitiveAttributes();
-
         return res.send({
           authenticationToken: authenticationToken,
           authenticationTokenExpirationDate: authenticationTokenExpirationDate,
           message: ResponseMessages.User.SuccessLogin,
-          user: user,
+          user: user.removeSensitiveAttributes(),
         });
       } else {
         // IF THE PASSWORD IS INCORRECT, THE LOGIN ATTEMPT SHOULD FAIL.
@@ -270,6 +266,9 @@ class UserRouter {
         case "zipCode":
           req.user.setZipCode(req.body[update]);
           break;
+        case "email":
+          req.user.setEmail(req.body[update]);
+          break;
       }
     });
     try {
@@ -282,7 +281,7 @@ class UserRouter {
 
       return res.send({
         message: ResponseMessages.User.UserSuccessfullyUpdated,
-        user: req.user,
+        user: req.user.removeSensitiveAttributes(),
       });
     } catch (e) {
       return res.send({
@@ -341,14 +340,14 @@ class UserRouter {
    */
   static async deleteAccount(req, res) {
     //CHECK IF THE CURRENT PASSWORD PROVIDED IS CORRECT
-    const currentPasswordIsCorrect = Authenticator.verifyPassword(
-      req.body.currentPassword,
-      req.user
-    );
+    // const currentPasswordIsCorrect = Authenticator.verifyPassword(
+    //   req.body.currentPassword,
+    //   req.user
+    // );
 
-    if (!currentPasswordIsCorrect) {
-      return res.send({ error: ResponseMessages.User.IncorrectPassword });
-    }
+    // if (!currentPasswordIsCorrect) {
+    //   return res.send({ error: ResponseMessages.User.IncorrectPassword });
+    // }
 
     try {
       const userWasDeleted = await req.user.delete();
@@ -356,13 +355,11 @@ class UserRouter {
       if (!userWasDeleted) {
         return res.send({
           message: ResponseMessages.User.UserErrorDeleted,
-          user: req.user,
         });
       }
 
       return res.send({
         message: ResponseMessages.User.UserSuccessfullyDeleted,
-        user: req.user,
       });
     } catch (e) {
       return res.send({

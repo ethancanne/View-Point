@@ -7,6 +7,7 @@ const jwtExpirationDate = new Date(
   localStorage.getItem("authenticationTokenExpirationDate")
 );
 
+//Check if the authentication token is still valid
 const userIsLoggedIn = Date.now() < jwtExpirationDate;
 
 var initialState = {};
@@ -22,6 +23,7 @@ console.log(initialState);
  * @date   01/30/2022
  */
 const userReducer = (state = initialState, action) => {
+  console.log(action);
   switch (action.type) {
     //Sign the user in and save the user to local storage
     case userConstants.SIGN_IN:
@@ -38,6 +40,10 @@ const userReducer = (state = initialState, action) => {
     case userConstants.SIGN_OUT:
       localStorage.clear();
       return { ...state, user: {}, isLoggedIn: false };
+
+    case userConstants.EDIT_ACCOUNT:
+      localStorage.setItem("user", JSON.stringify(action.payload.user));
+      return { ...state, user: action.payload.user };
 
     default:
       return state;

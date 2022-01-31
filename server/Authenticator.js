@@ -120,6 +120,8 @@ class Authenticator {
    */
   static async verifyJsonWebToken(jsonWebTokenPayload, nextMiddlewareFunction) {
     try {
+      console.log(jsonWebTokenPayload);
+
       // GET THE USER ASSOCIATED WITH THE REQUEST.
       const userIdToSearchFor = jsonWebTokenPayload.sub;
       const user = await User.getById(userIdToSearchFor);
@@ -144,7 +146,7 @@ class Authenticator {
         return nextMiddlewareFunction(errors, userExists);
       }
     } catch {
-      console.log("Can not connect");
+      console.log("Can't connect");
       nextMiddlewareFunction("ERROR", false);
     }
   }

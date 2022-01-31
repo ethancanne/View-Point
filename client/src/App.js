@@ -11,6 +11,7 @@ import axios from "axios";
 
 //Import Views
 import Notification from "./views/notification/Notification";
+import Popup from "./views/popup/Popup";
 
 //Import Redux
 import { useSelector, useDispatch } from "react-redux";
@@ -19,6 +20,7 @@ import { signIn, signOut } from "./state/actions";
 //Import Pages
 import Dashboard from "./pages/dashboard/Dashboard";
 import AuthPage from "./pages/auth/Auth";
+import Account from "./pages/account/Account";
 
 //Server Imports
 import Routes from "../../server/routes/Routes.js";
@@ -35,6 +37,7 @@ const App = props => {
   const notificationIsShowing = useSelector(
     state => state.notificationReducer.isShowing
   );
+  const popupIsShowing = useSelector(state => state.popupReducer.isShowing);
 
   const dispatch = useDispatch();
 
@@ -79,7 +82,7 @@ const App = props => {
               authenticationTokenExpirationDate,
               user,
             } = response.data;
-
+            console.log(user);
             dispatch(
               signIn({
                 authenticationToken,
@@ -99,13 +102,18 @@ const App = props => {
   return (
     <Router>
       <Notification isShowing={notificationIsShowing} />
+      <Popup isShowing={popupIsShowing} />
+
       <div className='container'>
         <Switch>
           <Route exact path='/'>
             {isLoggedIn ? <Redirect to='/dashboard' /> : <AuthPage />}
           </Route>
-          <Route path='/dashboard'>
-            <Dashboard />
+          <Route exact path='/dashboard'>
+            {isLoggedIn ? <Dashboard /> : <Redirect to='/' />}
+          </Route>
+          <Route exact path='/account'>
+            {isLoggedIn ? <Account /> : <Redirect to='/' />}
           </Route>
         </Switch>
       </div>

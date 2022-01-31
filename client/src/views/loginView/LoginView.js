@@ -9,7 +9,7 @@ import Button from "../../core/button/Button.js";
 import LoginForm from "../../components/loginForm/LoginForm.js";
 
 //Views
-import Views from "../Views.js";
+import views from "../Views.js";
 import AuthView from "../authView/AuthView";
 
 //Server
@@ -113,7 +113,7 @@ const LoginView = props => {
    * @date   01/30/2022
    */
   const signUpClicked = e => {
-    props.setAuthView(Views.Auth.CreateAccount);
+    props.setAuthView(views.auth.CREATE_ACCOUNT);
   };
 
   return (

@@ -4,7 +4,7 @@ import Page from "../Page.js";
 //IMPORT VIEWS
 import LoginView from "../../views/loginView/LoginView";
 import CreateAccountView from "../../views/createAccountView/CreateAccountView";
-import Views from "../../views/Views.js";
+import views from "../../views/Views.js";
 
 /**
  * The authentication page of the application. This is shown when the user has not logged in.
@@ -13,15 +13,15 @@ import Views from "../../views/Views.js";
  * @date   01/30/2022
  */
 const Auth = props => {
-  const [view, setAuthView] = useState(Views.Auth.Login);
+  const [view, setAuthView] = useState(views.auth.LOGIN);
   let authView = <></>;
 
   switch (view) {
-    case Views.Auth.Login:
+    case views.auth.LOGIN:
       authView = <LoginView setAuthView={setAuthView} />;
       break;
 
-    case Views.Auth.CreateAccount:
+    case views.auth.CREATE_ACCOUNT:
       authView = <CreateAccountView setAuthView={setAuthView} />;
       break;
   }

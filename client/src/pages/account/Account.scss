@@ -1,0 +1,9 @@
+.account-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  .info {
+    padding: 20px;
+    margin: 20px;
+  }
+}

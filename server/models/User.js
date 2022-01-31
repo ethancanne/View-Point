@@ -330,6 +330,15 @@ class User {
   }
 
   /**
+   * Gets the isActive flag of the user.
+   * @return {Boolean} The user's isActive flag.
+   * @author Ethan Cannelongo
+   * @date   01/29/2022
+   */
+  getIsActive() {
+    return this.isActive;
+  }
+  /**
    * Used to remove any sensitive attributes so the object can be sent to the client.
    * @return {User} The user instance without any sensitive attributes.
    * @author Ethan Cannelongo
@@ -337,6 +346,11 @@ class User {
    */
   removeSensitiveAttributes() {
     delete this.passwordHash;
+    delete this._id;
+    delete this.createdAt;
+    delete this.updatedAt;
+    delete this.isActive;
+
     return this;
   }
 
@@ -465,31 +479,42 @@ class User {
    * @param {String} newPassword The new password to set.
    * @return {Boolean} True if the password was updated, false otherwise.
    * @author Ethan Cannelongo
-   * @async
    */
-  async setPassword(newPasswordHash) {
+  setPassword(newPasswordHash) {
     this.passwordHash = newPasswordHash;
     const passwordHashSet = Validator.isDefined(this.passwordHash);
     return passwordHashSet;
   }
 
   /**
-   * Deletes the user
+   * Sets the users isActive flag to false, deactivating their account
+   * @return {Boolean} True if the deactivation process was successful, false otherwise.
+   * @author Ethan Cannelongo
+   */
+  deactivateAccount() {
+    this.isActive = false;
+    const isActiveSet = Validator.isDefined(this.isActive);
+    return isActiveSet;
+  }
+  /**
+   * Deletes the user (Deactivates their account)
    * @return {Boolean} True if the password was updated, false otherwise.
    * @author Ethan Cannelongo
    * @async
    */
   async delete() {
-    let userWasDeleted = false;
+    console.log("Deleting");
+    const userWasDeleted = false;
+    const userWasSaved = false;
 
     try {
-      const userModel = await UserModel.findOne({ _id: this._id }).exec();
-      await userModel.remove();
-      userWasDeleted = true;
-    } catch (e) {
+      userWasDeleted = this.deactivateAccount();
+      userWasSaved = await this.save();
+    } catch {
       return false;
+    } finally {
+      return userWasDeleted && userWasSaved;
     }
-    return userWasDeleted;
   }
 }
 module.exports = User;

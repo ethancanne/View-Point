@@ -1,69 +1,116 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-//Core
-import ButtonTypes from "../../core/button/ButtonTypes.js";
-import Button from "../../core/button/Button.js";
-
 //Views
 import views from "../Views.js";
 import AuthView from "../authView/AuthView";
 
 //Components
-import CreateAccountForm from "../../components/createAccountForm/CreateAccountForm";
+import EditAccountForm from "../../components/editAccountForm/EditAccountForm";
 
 //Server
 import Routes from "../../../../server/routes/Routes.js";
 import Validator from "../../../../server/Validator";
 
 //Redux
-import { useDispatch } from "react-redux";
-import { signIn, showErrorNotification } from "../../state/actions";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  editAccount,
+  showErrorNotification,
+  closePopup,
+  signOut,
+} from "../../state/actions";
 
 /**
- * This view presents the create account form on the home page
- * @param {function} setAuthView Used to set the view of this page, if the user presses the log in button
+ * This view presents the edit account form on the home page and sends the edit account
+ * request to the server
  * @author Ethan Cannelongo
  * @date   01/30/2022
  */
-const CreateAccountView = props => {
+const EditAccountView = props => {
   const BLANK = "";
-  const [email, setEmail] = useState(BLANK);
-  const [password, setPassword] = useState(BLANK);
-  const [confirmPassword, setConfirmPassword] = useState(BLANK);
-  const [firstName, setFirstName] = useState(BLANK);
-  const [lastName, setLastName] = useState(BLANK);
-  const [address, setAddress] = useState(BLANK);
-  const [city, setCity] = useState(BLANK);
-  const [state, setState] = useState(BLANK);
-  const [zipCode, setZipCode] = useState(BLANK);
+  const user = useSelector(state => state.userReducer.user);
+
+  const [email, setEmail] = useState(user.email);
+  const [firstName, setFirstName] = useState(user.firstName);
+  const [lastName, setLastName] = useState(user.lastName);
+  const [address, setAddress] = useState(user.address);
+  const [city, setCity] = useState(user.city);
+  const [state, setState] = useState(user.state);
+  const [zipCode, setZipCode] = useState(user.zipCode);
 
   const dispatch = useDispatch();
 
   /**
-   * Submits the create account request to the server for verification.
+   * Submits the delete account request to the server.
+   * @author Ethan Cannelongo
+   * @date   01/31/2022
+   */
+  const submitDeleteAccount = async () => {
+    dispatch(closePopup());
+
+    // SUBMIT THE EDIT ACCOUNT REQUEST.
+    let response;
+    try {
+      //Set the Authorization Token in the header of the request
+      axios.defaults.headers.common["Authorization"] =
+        localStorage.getItem("token");
+
+      //Make the request
+      response = await axios.delete(Routes.User.LoggedInUser);
+    } catch (error) {
+      console.log(error);
+      dispatch(
+        showErrorNotification(
+          "There was a problem connecting to the server:" + error
+        )
+      );
+    } finally {
+      const responseIsDefined = Validator.isDefined(response.data);
+      if (responseIsDefined) {
+        // If account creation was successful, configure the client.
+        const deleteAccountWasSuccessful = Validator.isUndefined(
+          response.data.error
+        );
+        if (deleteAccountWasSuccessful) {
+          dispatch(signOut());
+        } else {
+          dispatch(showErrorNotification(response.data.error));
+          console.log(response.data.error);
+        }
+      } else {
+        dispatch(
+          showErrorNotification(
+            "There was an error connecting to the server.  Please try again later"
+          )
+        );
+      }
+    }
+  };
+
+  /**
+   * Submits the edit account request to the server for verification.
    * @param {Event} event The form submission event that triggers the login.
    * @author Ethan Cannelongo
-   * @date   01/30/2022
+   * @date   01/31/2022
    */
-  const submitAccountCreation = async event => {
+  const submitEditAccount = async event => {
+    dispatch(closePopup());
+
     // PREVENT THE DEFAULT FORM SUBMISSION BEHAVIOR.
     event.preventDefault();
     event.stopPropagation();
 
-    // FIRST, COMPARE THE PASSWORD AND CONFIRM PASSWORD FIELDS
-    if (password !== confirmPassword) {
-      dispatch(showErrorNotification("Passwords don't match!"));
-      return;
-    }
-
-    // SUBMIT THE CREATE ACCOUNT REQUEST. (Test in Postman)
+    // SUBMIT THE EDIT ACCOUNT REQUEST.
     let response;
     try {
-      response = await axios.post(Routes.User.CreateAccount, {
+      //Set the Authorization Token in the header of the request
+      axios.defaults.headers.common["Authorization"] =
+        localStorage.getItem("token");
+
+      //Make the request
+      response = await axios.patch(Routes.User.LoggedInUser, {
         email,
-        password,
-        password_confirmation: confirmPassword,
         firstName,
         lastName,
         address,
@@ -82,19 +129,13 @@ const CreateAccountView = props => {
       const responseIsDefined = Validator.isDefined(response.data);
       if (responseIsDefined) {
         // If account creation was successful, configure the client.
-        const accountCreationWasSuccessful = Validator.isUndefined(
+        const editAccountWasSuccessful = Validator.isUndefined(
           response.data.error
         );
-        if (accountCreationWasSuccessful) {
-          const {
-            authenticationToken,
-            authenticationTokenExpirationDate,
-            user,
-          } = response.data;
+        if (editAccountWasSuccessful) {
+          const { user } = response.data;
           dispatch(
-            signIn({
-              authenticationToken,
-              authenticationTokenExpirationDate,
+            editAccount({
               user,
             })
           );
@@ -105,7 +146,7 @@ const CreateAccountView = props => {
       } else {
         dispatch(
           showErrorNotification(
-            "There was an error with the server, please try again later."
+            "There was an error connecting to the server.  Please try again later"
           )
         );
       }
@@ -120,26 +161,6 @@ const CreateAccountView = props => {
    */
   const updateEmailField = event => {
     setEmail(event.target.value);
-  };
-
-  /**
-   * Used to update the password field in the create account form.
-   * @param {Event} event The change event to update the field with.
-   * @author Ethan Cannelongo
-   * @date   01/30/22
-   */
-  const updatePasswordField = event => {
-    setPassword(event.target.value);
-  };
-
-  /**
-   * Used to update the confirm password field in the create account form.
-   * @param {Event} event The change event to update the field with.
-   * @author Ethan Cannelongo
-   * @date   01/30/2022
-   */
-  const updateConfirmPasswordField = event => {
-    setConfirmPassword(event.target.value);
   };
 
   /**
@@ -202,22 +223,11 @@ const CreateAccountView = props => {
     setZipCode(event.target.value);
   };
 
-  /**
-   * Sets the home view to the sign in form.
-   * @author Ethan Cannelongo
-   * @date   01/30/2022
-   */
-  const signInClicked = () => {
-    props.setAuthView(views.auth.LOGIN);
-  };
-
   return (
-    <AuthView>
-      <p>Create Your Account</p>
-      <CreateAccountForm
+    <div>
+      <p>Edit your information</p>
+      <EditAccountForm
         email={email}
-        password={password}
-        confirmPassword={confirmPassword}
         firstName={firstName}
         lastName={lastName}
         address={address}
@@ -225,25 +235,17 @@ const CreateAccountView = props => {
         state={state}
         zipCode={zipCode}
         updateEmailField={updateEmailField}
-        updatePasswordField={updatePasswordField}
-        updateConfirmPasswordField={updateConfirmPasswordField}
         updateFirstNameField={updateFirstNameField}
         updateLastNameField={updateLastNameField}
         updateAddressField={updateAddressField}
         updateCityField={updateCityField}
         updateStateField={updateStateField}
         updateZipCodeField={updateZipCodeField}
-        submitAccountCreation={submitAccountCreation}
+        submitEditAccount={submitEditAccount}
+        submitDeleteAccount={submitDeleteAccount}
       />
-
-      <div className='other-options'>
-        <p>Already have an account?</p>
-        <Button type={ButtonTypes.Primary} onClick={signInClicked}>
-          Sign In
-        </Button>
-      </div>
-    </AuthView>
+    </div>
   );
 };
 
-export default CreateAccountView;
+export default EditAccountView;

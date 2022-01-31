@@ -3,11 +3,11 @@
  * @author  Ethan Cannelongo
  * @date   01/30/2022
  */
-const Views = {
-  Auth: {
-    Login: "Login",
-    CreateAccount: "Create account",
+const views = {
+  auth: {
+    LOGIN: "LOGIN",
+    CREATE_ACCOUNT: "CREATE_ACCOUNT",
   },
 };
 
-export default Views;
+export default views;

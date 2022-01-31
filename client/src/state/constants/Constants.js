@@ -2,6 +2,13 @@
 export const userConstants = {
   SIGN_IN: "SIGN_IN",
   SIGN_OUT: "SIGN_OUT",
+  EDIT_ACCOUNT: "EDIT_ACCOUNT",
+};
+
+// POPUP
+export const popupConstants = {
+  SHOW_EDIT_ACCOUNT_POPUP: "SHOW_EDIT_ACCOUNT_POPUP",
+  CLOSE_POPUP: "CLOSE_POPUP",
 };
 
 //NOTIFICATIONS

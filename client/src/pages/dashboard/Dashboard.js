@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Page from "../Page";
 import Button from "../../core/button/Button";
+import { Link } from "react-router-dom";
 
 //Import Redux
 import { useSelector, useDispatch } from "react-redux";
@@ -14,6 +15,9 @@ const Dashboard = () => {
       {isLoggedIn ? (
         <div>
           <Button onClick={() => dispatch(signOut())}>Log Out</Button>
+          <Link to='/account'>
+            <Button>Account</Button>
+          </Link>
         </div>
       ) : (
         <div>Not Logged In</div>
