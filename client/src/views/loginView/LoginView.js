@@ -82,8 +82,6 @@ const LoginView = props => {
               user,
             })
           );
-          console.log(response.data.message);
-          dispatch(showSuccessNotification(response.data.message));
         } else {
           dispatch(showErrorNotification(response.data.error));
           dispatch(signOut);

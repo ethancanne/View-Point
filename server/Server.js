@@ -8,6 +8,7 @@ const Configuration = require("../Configuration.js");
 const Path = require("path");
 const { dirname } = require("path");
 
+console.log("In Server");
 //Bring in routers
 const UserRouter = require("./routers/UserRouter");
 const StaticResourceRouter = require("./routers/StaticResourceRouter");
