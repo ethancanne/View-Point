@@ -4,9 +4,12 @@
   "description": "",
   "main": "./server/Server.js",
   "scripts": {
+    "build": "webpack --mode production",
     "dev": "concurrently --kill-others \"nodemon --watch Server server/Server.js\" \"webpack server --mode development\"",
     "doc": "jsdoc -c jsdoc.config.json",
     "heroku-postbuild": "webpack --mode production",
+    "heroku-prebuild": "npm i -f",
+    "heroku-postbuild": "npm prune --production",
     "start": "node server/Server.js",
     "devServer": "nodemon --watch"
   },
