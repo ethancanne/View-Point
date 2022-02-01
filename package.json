@@ -7,7 +7,7 @@
     "dev": "concurrently --kill-others \"nodemon --watch Server server/Server.js\" \"webpack server --mode development\"",
     "doc": "jsdoc -c jsdoc.config.json",
     "heroku-postbuild": "webpack --mode production",
-    "start": "node Server/Server.js",
+    "start": "node server/Server.js",
     "devServer": "nodemon --watch"
   },
   "dependencies": {
