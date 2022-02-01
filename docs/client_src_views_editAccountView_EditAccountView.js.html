@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: client/src/views/editAccountView/EditAccountView.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: client/src/views/editAccountView/EditAccountView.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import "./EditAccountView.scss";
+import React, { useState } from "react";
+import axios from "axios";
+
+//Core
+import Button from "../../core/button/Button";
+import ButtonTypes from "../../core/button/ButtonTypes";
+
+//Components
+import EditAccountForm from "../../components/editAccountForm/EditAccountForm";
+
+//Server
+import Routes from "../../../../server/routes/Routes.js";
+import Validator from "../../../../server/Validator";
+
+//Redux
+import { useDispatch, useSelector } from "react-redux";
+import {
+  editAccount,
+  showErrorNotification,
+  closePopup,
+  signOut,
+  showSuccessNotification,
+} from "../../state/actions";
+
+/**
+ * This view presents the edit account form on the home page and sends the edit account
+ * request to the server
+ * @author Ethan Cannelongo
+ * @date   01/30/2022
+ */
+const EditAccountView = props => {
+  const BLANK = "";
+  const user = useSelector(state => state.userReducer.user);
+
+  const [email, setEmail] = useState(user.email);
+  const [firstName, setFirstName] = useState(user.firstName);
+  const [lastName, setLastName] = useState(user.lastName);
+  const [address, setAddress] = useState(user.address);
+  const [city, setCity] = useState(user.city);
+  const [state, setState] = useState(user.state);
+  const [zipCode, setZipCode] = useState(user.zipCode);
+
+  const dispatch = useDispatch();
+
+  /**
+   * Submits the delete account request to the server.
+   * @author Ethan Cannelongo
+   * @date   01/31/2022
+   */
+  const submitDeleteAccount = async () => {
+    // SUBMIT THE EDIT ACCOUNT REQUEST.
+    let response;
+    try {
+      //Set the Authorization Token in the header of the request
+      axios.defaults.headers.common["Authorization"] =
+        localStorage.getItem("token");
+
+      //Make the request
+      response = await axios.delete(Routes.User.LoggedInUser);
+    } catch (error) {
+      console.log(error);
+      dispatch(
+        showErrorNotification(
+          "There was a problem connecting to the server:" + error
+        )
+      );
+    } finally {
+      const responseIsDefined = Validator.isDefined(response.data);
+      if (responseIsDefined) {
+        // If account creation was successful, configure the client.
+        const deleteAccountWasSuccessful = Validator.isUndefined(
+          response.data.error
+        );
+        if (deleteAccountWasSuccessful) {
+          dispatch(closePopup());
+          dispatch(signOut());
+          dispatch(showSuccessNotification(response.data.message));
+        } else {
+          dispatch(showErrorNotification(response.data.error));
+          console.log(response.data.error);
+        }
+      } else {
+        dispatch(
+          showErrorNotification(
+            "There was an error connecting to the server.  Please try again later"
+          )
+        );
+      }
+    }
+  };
+
+  /**
+   * Submits the edit account request to the server for verification.
+   * @param {Event} event The form submission event that triggers the login.
+   * @author Ethan Cannelongo
+   * @date   01/31/2022
+   */
+  const submitEditAccount = async event => {
+    dispatch(closePopup());
+
+    // PREVENT THE DEFAULT FORM SUBMISSION BEHAVIOR.
+    event.preventDefault();
+    event.stopPropagation();
+
+    // SUBMIT THE EDIT ACCOUNT REQUEST.
+    let response;
+    try {
+      //Set the Authorization Token in the header of the request
+      axios.defaults.headers.common["Authorization"] =
+        localStorage.getItem("token");
+
+      //Make the request
+      response = await axios.patch(Routes.User.LoggedInUser, {
+        email,
+        firstName,
+        lastName,
+        address,
+        city,
+        state,
+        zipCode,
+      });
+    } catch (error) {
+      console.log(error);
+      dispatch(
+        showErrorNotification(
+          "There was a problem connecting to the server:" + error
+        )
+      );
+    } finally {
+      const responseIsDefined = Validator.isDefined(response.data);
+      if (responseIsDefined) {
+        // If account creation was successful, configure the client.
+        const editAccountWasSuccessful = Validator.isUndefined(
+          response.data.error
+        );
+        if (editAccountWasSuccessful) {
+          const { user } = response.data;
+          dispatch(
+            editAccount({
+              user,
+            })
+          );
+          dispatch(showSuccessNotification(response.data.message));
+        } else {
+          dispatch(showErrorNotification(response.data.error));
+          console.log(response.data.error);
+        }
+      } else {
+        dispatch(
+          showErrorNotification(
+            "There was an error connecting to the server.  Please try again later"
+          )
+        );
+      }
+    }
+  };
+
+  /**
+   * Used to update the email field in the create account form.
+   * @param {Event} event The change event to update the field with.
+   * @author Ethan Cannelongo
+   * @date   01/30/22
+   */
+  const updateEmailField = event => {
+    setEmail(event.target.value);
+  };
+
+  /**
+   * Used to update the first name field in the create account form.
+   * @param {Event} event The change event to update the field with.
+   * @author Ethan Cannelongo
+   * @date   01/30/2022
+   */
+  const updateFirstNameField = event => {
+    setFirstName(event.target.value);
+  };
+
+  /**
+   * Used to update the last name field in the create account form.
+   * @param {Event} event The change event to update the field with.
+   * @author Ethan Cannelongo
+   * @date   01/30/2022
+   */
+  const updateLastNameField = event => {
+    setLastName(event.target.value);
+  };
+
+  /**
+   * Used to update the address field in the create account form.
+   * @param {Event} event The change event to update the field with.
+   * @author Ethan Cannelongo
+   * @date   01/30/2022
+   */
+  const updateAddressField = event => {
+    setAddress(event.target.value);
+  };
+
+  /**
+   * Used to update the city field in the create account form.
+   * @param {Event} event The change event to update the field with.
+   * @author Ethan Cannelongo
+   * @date   01/30/2022
+   */
+  const updateCityField = event => {
+    setCity(event.target.value);
+  };
+
+  /**
+   * Used to update the state field in the create account form.
+   * @param {Event} event The change event to update the field with.
+   * @author Ethan Cannelongo
+   * @date   01/30/2022
+   */
+  const updateStateField = event => {
+    setState(event.target.value);
+  };
+
+  /**
+   * Used to update the zip code field in the create account form.
+   * @param {Event} event The change event to update the field with.
+   * @author Ethan Cannelongo
+   * @date   01/30/2022
+   */
+  const updateZipCodeField = event => {
+    setZipCode(event.target.value);
+  };
+
+  return (
+    &lt;div className='edit-account-view'>
+      &lt;EditAccountForm
+        email={email}
+        firstName={firstName}
+        lastName={lastName}
+        address={address}
+        city={city}
+        state={state}
+        zipCode={zipCode}
+        updateEmailField={updateEmailField}
+        updateFirstNameField={updateFirstNameField}
+        updateLastNameField={updateLastNameField}
+        updateAddressField={updateAddressField}
+        updateCityField={updateCityField}
+        updateStateField={updateStateField}
+        updateZipCodeField={updateZipCodeField}
+        submitEditAccount={submitEditAccount}
+      />
+      &lt;Button
+        type={ButtonTypes.Destructive}
+        onClick={() => submitDeleteAccount()}
+        style={{ width: "96%" }}>
+        Delete Account
+      &lt;/Button>
+    &lt;/div>
+  );
+};
+
+export default EditAccountView;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Authenticator.html">Authenticator</a></li><li><a href="Configuration.html">Configuration</a></li><li><a href="JsonWebTokenStrategyOptions.html">JsonWebTokenStrategyOptions</a></li><li><a href="StaticResourceRouter.html">StaticResourceRouter</a></li><li><a href="User.html">User</a></li><li><a href="UserRouter.html">UserRouter</a></li><li><a href="Validator.html">Validator</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Account">Account</a></li><li><a href="global.html#allReducers">allReducers</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#Auth">Auth</a></li><li><a href="global.html#AuthView">AuthView</a></li><li><a href="global.html#Button">Button</a></li><li><a href="global.html#ButtonTypes">ButtonTypes</a></li><li><a href="global.html#CreateAccountForm">CreateAccountForm</a></li><li><a href="global.html#CreateAccountView">CreateAccountView</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#EditAccountForm">EditAccountForm</a></li><li><a href="global.html#EditAccountView">EditAccountView</a></li><li><a href="global.html#Form">Form</a></li><li><a href="global.html#InputField">InputField</a></li><li><a href="global.html#Label">Label</a></li><li><a href="global.html#LoginForm">LoginForm</a></li><li><a href="global.html#LoginView">LoginView</a></li><li><a href="global.html#Notification">Notification</a></li><li><a href="global.html#notificationReducer">notificationReducer</a></li><li><a href="global.html#Page">Page</a></li><li><a href="global.html#Popup">Popup</a></li><li><a href="global.html#popupReducer">popupReducer</a></li><li><a href="global.html#popupTypes">popupTypes</a></li><li><a href="global.html#ResponseMessages">ResponseMessages</a></li><li><a href="global.html#Routes">Routes</a></li><li><a href="global.html#TextInput">TextInput</a></li><li><a href="global.html#TopBar">TopBar</a></li><li><a href="global.html#userReducer">userReducer</a></li><li><a href="global.html#UserSchema">UserSchema</a></li><li><a href="global.html#views">views</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Tue Feb 01 2022 00:07:41 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

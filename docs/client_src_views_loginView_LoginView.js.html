@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: client/src/views/loginView/LoginView.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: client/src/views/loginView/LoginView.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import axios from "axios";
+import React, { useState } from "react";
+
+//Core
+import ButtonTypes from "../../core/button/ButtonTypes.js";
+import Button from "../../core/button/Button.js";
+
+//Components
+import LoginForm from "../../components/loginForm/LoginForm.js";
+
+//Views
+import views from "../Views.js";
+import AuthView from "../authView/AuthView";
+
+//Server
+import Routes from "../../../../server/routes/Routes.js";
+import Validator from "../../../../server/Validator.js";
+
+//Redux
+import { useDispatch } from "react-redux";
+import {
+  signIn,
+  signOut,
+  showErrorNotification,
+  showSuccessNotification,
+} from "../../state/actions";
+/**
+ * Used to display the login form and log the user in.
+ * @param {function} clientSideLogin Used to log the user in from the client-side perspective.
+ * @param {function} clientSideLogout Used to log the user out from the client-side perspective.
+ * @param {function} setHomeView Used to set the view of the home page, if the user presses the create account button
+ * @author Ethan Cannelongo
+ * @date   01/30/2022
+ */
+const LoginView = props => {
+  const BLANK = "";
+  const [email, setEmail] = useState(BLANK);
+  const [password, setPassword] = useState(BLANK);
+  const dispatch = useDispatch();
+
+  /**
+   * Submits the login request to the server for verification.
+   * @param {Event} event The form submission event that triggers the login.
+   * @author Ethan Cannelongo
+   * @date   01/30/2022
+   */
+  const submitLogin = async event => {
+    // PREVENT THE DEFAULT FORM SUBMISSION BEHAVIOR.
+    event.preventDefault();
+    event.stopPropagation();
+
+    console.log(email, password);
+    // SUBMIT THE LOGIN REQUEST.
+    let response = undefined;
+    try {
+      response = await axios.post(Routes.User.Login, {
+        email,
+        password,
+      });
+    } catch (error) {
+      dispatch(
+        showErrorNotification(
+          "There was a problem connecting to the server:" + error
+        )
+      );
+    } finally {
+      const responseIsDefined = Validator.isDefined(response.data);
+      if (responseIsDefined) {
+        // IF THE USER HAS LOGGED IN, CONFIGURE THE CLIENT TO REFLECT THIS.
+        const loginWasSuccessful = Validator.isUndefined(response.data.error);
+        if (loginWasSuccessful) {
+          const {
+            authenticationToken,
+            authenticationTokenExpirationDate,
+            user,
+          } = response.data;
+
+          dispatch(
+            signIn({
+              authenticationToken,
+              authenticationTokenExpirationDate,
+              user,
+            })
+          );
+          console.log(response.data.message);
+          dispatch(showSuccessNotification(response.data.message));
+        } else {
+          dispatch(showErrorNotification(response.data.error));
+          dispatch(signOut);
+        }
+      } else {
+        dispatch(showErrorNotification("There was an error with the server"));
+      }
+    }
+  };
+
+  /**
+   * Used to update the email field in the login form.
+   * @param {Event} e The change event to update the field with.
+   * @author Ethan Cannelongo
+   * @date   01/30/2022
+   */
+  const updateEmailField = e => {
+    setEmail(e.target.value);
+  };
+
+  /**
+   * Used to update the password field in the login form.
+   * @param {Event} e The change event to update the field with.
+   * @author Ethan Cannelongo
+   * @date   01/30/2022
+   */
+  const updatePasswordField = e => {
+    setPassword(e.target.value);
+  };
+
+  /**
+   * Sets the home view to the sign up form.
+   * @author Ethan Cannelongo
+   * @date   01/30/2022
+   */
+  const signUpClicked = e => {
+    props.setAuthView(views.auth.CREATE_ACCOUNT);
+  };
+
+  return (
+    &lt;AuthView>
+      &lt;LoginForm
+        email={email}
+        password={password}
+        updateEmailField={updateEmailField}
+        updatePasswordField={updatePasswordField}
+        submitLogin={submitLogin}
+      />
+
+      &lt;div className='other-options'>
+        &lt;p>Don't have an account?&lt;/p>
+        &lt;Button
+          type={ButtonTypes.Primary}
+          onClick={signUpClicked}
+          style={{ width: "97%" }}>
+          Sign Up
+        &lt;/Button>
+      &lt;/div>
+    &lt;/AuthView>
+  );
+};
+
+export default LoginView;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Authenticator.html">Authenticator</a></li><li><a href="Configuration.html">Configuration</a></li><li><a href="JsonWebTokenStrategyOptions.html">JsonWebTokenStrategyOptions</a></li><li><a href="StaticResourceRouter.html">StaticResourceRouter</a></li><li><a href="User.html">User</a></li><li><a href="UserRouter.html">UserRouter</a></li><li><a href="Validator.html">Validator</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Account">Account</a></li><li><a href="global.html#allReducers">allReducers</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#Auth">Auth</a></li><li><a href="global.html#AuthView">AuthView</a></li><li><a href="global.html#Button">Button</a></li><li><a href="global.html#ButtonTypes">ButtonTypes</a></li><li><a href="global.html#CreateAccountForm">CreateAccountForm</a></li><li><a href="global.html#CreateAccountView">CreateAccountView</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#EditAccountForm">EditAccountForm</a></li><li><a href="global.html#EditAccountView">EditAccountView</a></li><li><a href="global.html#Form">Form</a></li><li><a href="global.html#InputField">InputField</a></li><li><a href="global.html#Label">Label</a></li><li><a href="global.html#LoginForm">LoginForm</a></li><li><a href="global.html#LoginView">LoginView</a></li><li><a href="global.html#Notification">Notification</a></li><li><a href="global.html#notificationReducer">notificationReducer</a></li><li><a href="global.html#Page">Page</a></li><li><a href="global.html#Popup">Popup</a></li><li><a href="global.html#popupReducer">popupReducer</a></li><li><a href="global.html#popupTypes">popupTypes</a></li><li><a href="global.html#ResponseMessages">ResponseMessages</a></li><li><a href="global.html#Routes">Routes</a></li><li><a href="global.html#TextInput">TextInput</a></li><li><a href="global.html#TopBar">TopBar</a></li><li><a href="global.html#userReducer">userReducer</a></li><li><a href="global.html#UserSchema">UserSchema</a></li><li><a href="global.html#views">views</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Tue Feb 01 2022 00:07:41 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

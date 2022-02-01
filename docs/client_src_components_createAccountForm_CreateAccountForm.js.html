@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: client/src/components/createAccountForm/CreateAccountForm.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: client/src/components/createAccountForm/CreateAccountForm.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React from "react";
+
+import Button from "../../core/button/Button.js";
+import ButtonTypes from "../../core/button/ButtonTypes";
+
+import Form from "../../core/form/Form";
+import InputField from "../../core/inputField/InputField";
+import Label from "../../core/label/Label";
+import TextInput from "../../core/inputs/TextInput";
+
+/**
+ * Renders a create account form.
+ * @param {String} props.email The email address in the form.
+ * @param {String} props.password The password in the form.
+ * @param {String} props.confirmPassword The value of the confirm password field in the form.
+ * @param {String} props.firstName The value of the first name field in the form.
+ * @param {String} props.lastName The value of the last namefield in the form.
+ * @param {String} props.address The value of the address field in the form.
+ * @param {String} props.city The value of the city field in the form.
+ * @param {String} props.state The value of the state field in the form.
+ * @param {String} props.zipCode The value of the zipCode field in the form.
+ * @param {function} props.updateEmailField The function used to update the email address.
+ * @param {function} props.updatePasswordField The function used to update the password.
+ * @param {function} props.updateConfirmPasswordField The function used to update the confirm password.
+ * @param {function} props.updateFirstName The function used to update the First Name.
+ * @param {function} props.updateLastName The function used to update the Last Name.
+ * @param {function} props.updateAddress The function used to update the Address.
+ * @param {function} props.updateCity The function used to update the City.
+ * @param {function} props.updateState The function used to update the State.
+ * @param {function} props.updateZipCode The function used to update the Zip Code.
+ * @param {function} props.submitAccountCreation Used to submit the AccountCreation form.
+ * @author Ethan Cannelongo
+ * @date   01/30/2022
+ */
+const CreateAccountForm = props => {
+  return (
+    &lt;div className='create-account-form'>
+      &lt;Form onSubmit={props.submitAccountCreation}>
+        &lt;InputField>
+          &lt;Label>Email&lt;/Label>
+          &lt;TextInput
+            value={props.email}
+            onChange={props.updateEmailField}
+            type='email'
+          />
+        &lt;/InputField>
+        &lt;div className='side-by-side'>
+          &lt;InputField>
+            &lt;Label>Password&lt;/Label>
+            &lt;TextInput
+              value={props.password}
+              onChange={props.updatePasswordField}
+              type='password'
+            />
+          &lt;/InputField>
+          &lt;InputField>
+            &lt;Label>Confirm Password&lt;/Label>
+            &lt;TextInput
+              value={props.confirmPassword}
+              onChange={props.updateConfirmPasswordField}
+              type='password'
+            />
+          &lt;/InputField>
+        &lt;/div>
+        &lt;div className='side-by-side'>
+          &lt;InputField>
+            &lt;Label>First Name&lt;/Label>
+            &lt;TextInput
+              value={props.firstName}
+              onChange={props.updateFirstNameField}
+            />
+          &lt;/InputField>
+          &lt;InputField>
+            &lt;Label>Last Name&lt;/Label>
+            &lt;TextInput
+              value={props.lastName}
+              onChange={props.updateLastNameField}
+            />
+          &lt;/InputField>
+        &lt;/div>
+        &lt;InputField>
+          &lt;Label>Address&lt;/Label>
+          &lt;TextInput
+            value={props.address}
+            onChange={props.updateAddressField}
+          />
+        &lt;/InputField>
+        &lt;div className='side-by-side'>
+          &lt;InputField>
+            &lt;Label>City&lt;/Label>
+            &lt;TextInput value={props.city} onChange={props.updateCityField} />
+          &lt;/InputField>
+          &lt;InputField>
+            &lt;Label>State&lt;/Label>
+            &lt;TextInput value={props.state} onChange={props.updateStateField} />
+          &lt;/InputField>
+          &lt;InputField>
+            &lt;Label>Zip Code&lt;/Label>
+            &lt;TextInput
+              value={props.zipCode}
+              onChange={props.updateZipCodeField}
+            />
+          &lt;/InputField>
+        &lt;/div>
+        &lt;Button type={ButtonTypes.Creation} style={{ width: "97%" }}>
+          Create Account
+        &lt;/Button>
+      &lt;/Form>
+    &lt;/div>
+  );
+};
+
+export default CreateAccountForm;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Authenticator.html">Authenticator</a></li><li><a href="Configuration.html">Configuration</a></li><li><a href="JsonWebTokenStrategyOptions.html">JsonWebTokenStrategyOptions</a></li><li><a href="StaticResourceRouter.html">StaticResourceRouter</a></li><li><a href="User.html">User</a></li><li><a href="UserRouter.html">UserRouter</a></li><li><a href="Validator.html">Validator</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Account">Account</a></li><li><a href="global.html#allReducers">allReducers</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#Auth">Auth</a></li><li><a href="global.html#AuthView">AuthView</a></li><li><a href="global.html#Button">Button</a></li><li><a href="global.html#ButtonTypes">ButtonTypes</a></li><li><a href="global.html#CreateAccountForm">CreateAccountForm</a></li><li><a href="global.html#CreateAccountView">CreateAccountView</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#EditAccountForm">EditAccountForm</a></li><li><a href="global.html#EditAccountView">EditAccountView</a></li><li><a href="global.html#Form">Form</a></li><li><a href="global.html#InputField">InputField</a></li><li><a href="global.html#Label">Label</a></li><li><a href="global.html#LoginForm">LoginForm</a></li><li><a href="global.html#LoginView">LoginView</a></li><li><a href="global.html#Notification">Notification</a></li><li><a href="global.html#notificationReducer">notificationReducer</a></li><li><a href="global.html#Page">Page</a></li><li><a href="global.html#Popup">Popup</a></li><li><a href="global.html#popupReducer">popupReducer</a></li><li><a href="global.html#popupTypes">popupTypes</a></li><li><a href="global.html#ResponseMessages">ResponseMessages</a></li><li><a href="global.html#Routes">Routes</a></li><li><a href="global.html#TextInput">TextInput</a></li><li><a href="global.html#TopBar">TopBar</a></li><li><a href="global.html#userReducer">userReducer</a></li><li><a href="global.html#UserSchema">UserSchema</a></li><li><a href="global.html#views">views</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Tue Feb 01 2022 00:07:41 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
