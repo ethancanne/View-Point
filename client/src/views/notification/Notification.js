@@ -1,6 +1,8 @@
 import React from "react";
 import "./Notification.scss";
 import notificationTypes from "./NotificationTypes";
+
+//Redux
 import { useSelector, useDispatch } from "react-redux";
 import { hideNotification } from "../../state/actions";
 

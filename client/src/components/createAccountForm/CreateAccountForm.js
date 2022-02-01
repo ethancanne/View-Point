@@ -13,10 +13,22 @@ import TextInput from "../../core/inputs/TextInput";
  * @param {String} props.email The email address in the form.
  * @param {String} props.password The password in the form.
  * @param {String} props.confirmPassword The value of the confirm password field in the form.
- * @param {function} props.submitAccountCreation Used to submit the AccountCreation form.
+ * @param {String} props.firstName The value of the first name field in the form.
+ * @param {String} props.lastName The value of the last namefield in the form.
+ * @param {String} props.address The value of the address field in the form.
+ * @param {String} props.city The value of the city field in the form.
+ * @param {String} props.state The value of the state field in the form.
+ * @param {String} props.zipCode The value of the zipCode field in the form.
  * @param {function} props.updateEmailField The function used to update the email address.
  * @param {function} props.updatePasswordField The function used to update the password.
  * @param {function} props.updateConfirmPasswordField The function used to update the confirm password.
+ * @param {function} props.updateFirstName The function used to update the First Name.
+ * @param {function} props.updateLastName The function used to update the Last Name.
+ * @param {function} props.updateAddress The function used to update the Address.
+ * @param {function} props.updateCity The function used to update the City.
+ * @param {function} props.updateState The function used to update the State.
+ * @param {function} props.updateZipCode The function used to update the Zip Code.
+ * @param {function} props.submitAccountCreation Used to submit the AccountCreation form.
  * @author Ethan Cannelongo
  * @date   01/30/2022
  */
@@ -32,36 +44,40 @@ const CreateAccountForm = props => {
             type='email'
           />
         </InputField>
-        <InputField>
-          <Label>Password</Label>
-          <TextInput
-            value={props.password}
-            onChange={props.updatePasswordField}
-            type='password'
-          />
-        </InputField>
-        <InputField>
-          <Label>Confirm Password</Label>
-          <TextInput
-            value={props.confirmPassword}
-            onChange={props.updateConfirmPasswordField}
-            type='password'
-          />
-        </InputField>
-        <InputField>
-          <Label>First Name</Label>
-          <TextInput
-            value={props.firstName}
-            onChange={props.updateFirstNameField}
-          />
-        </InputField>
-        <InputField>
-          <Label>Last Name</Label>
-          <TextInput
-            value={props.lastName}
-            onChange={props.updateLastNameField}
-          />
-        </InputField>
+        <div className='side-by-side'>
+          <InputField>
+            <Label>Password</Label>
+            <TextInput
+              value={props.password}
+              onChange={props.updatePasswordField}
+              type='password'
+            />
+          </InputField>
+          <InputField>
+            <Label>Confirm Password</Label>
+            <TextInput
+              value={props.confirmPassword}
+              onChange={props.updateConfirmPasswordField}
+              type='password'
+            />
+          </InputField>
+        </div>
+        <div className='side-by-side'>
+          <InputField>
+            <Label>First Name</Label>
+            <TextInput
+              value={props.firstName}
+              onChange={props.updateFirstNameField}
+            />
+          </InputField>
+          <InputField>
+            <Label>Last Name</Label>
+            <TextInput
+              value={props.lastName}
+              onChange={props.updateLastNameField}
+            />
+          </InputField>
+        </div>
         <InputField>
           <Label>Address</Label>
           <TextInput
@@ -69,22 +85,26 @@ const CreateAccountForm = props => {
             onChange={props.updateAddressField}
           />
         </InputField>
-        <InputField>
-          <Label>City</Label>
-          <TextInput value={props.city} onChange={props.updateCityField} />
-        </InputField>
-        <InputField>
-          <Label>State</Label>
-          <TextInput value={props.state} onChange={props.updateStateField} />
-        </InputField>
-        <InputField>
-          <Label>Zip Code</Label>
-          <TextInput
-            value={props.zipCode}
-            onChange={props.updateZipCodeField}
-          />
-        </InputField>
-        <Button type={ButtonTypes.Creation}>Next</Button>
+        <div className='side-by-side'>
+          <InputField>
+            <Label>City</Label>
+            <TextInput value={props.city} onChange={props.updateCityField} />
+          </InputField>
+          <InputField>
+            <Label>State</Label>
+            <TextInput value={props.state} onChange={props.updateStateField} />
+          </InputField>
+          <InputField>
+            <Label>Zip Code</Label>
+            <TextInput
+              value={props.zipCode}
+              onChange={props.updateZipCodeField}
+            />
+          </InputField>
+        </div>
+        <Button type={ButtonTypes.Creation} style={{ width: "97%" }}>
+          Create Account
+        </Button>
       </Form>
     </div>
   );

@@ -1,9 +1,18 @@
-.account-container {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  .info {
-    padding: 20px;
-    margin: 20px;
+.account-page {
+  padding: 20px;
+  .info-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    .info {
+      padding: 20px;
+      margin: 20px;
+      // background-color: rgba(255, 255, 255, 0.76);
+      color: rgb(255, 255, 255);
+
+      backdrop-filter: blur(20px);
+      .info-label {
+      }
+    }
   }
 }

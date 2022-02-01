@@ -18,7 +18,11 @@ import Validator from "../../../../server/Validator";
 
 //Redux
 import { useDispatch } from "react-redux";
-import { signIn, showErrorNotification } from "../../state/actions";
+import {
+  signIn,
+  showErrorNotification,
+  showSuccessNotification,
+} from "../../state/actions";
 
 /**
  * This view presents the create account form on the home page
@@ -98,6 +102,7 @@ const CreateAccountView = props => {
               user,
             })
           );
+          dispatch(showSuccessNotification(response.data.message));
         } else {
           dispatch(showErrorNotification(response.data.error));
           console.log(response.data.error);
@@ -238,7 +243,10 @@ const CreateAccountView = props => {
 
       <div className='other-options'>
         <p>Already have an account?</p>
-        <Button type={ButtonTypes.Primary} onClick={signInClicked}>
+        <Button
+          type={ButtonTypes.Primary}
+          onClick={signInClicked}
+          style={{ width: "97%" }}>
           Sign In
         </Button>
       </div>

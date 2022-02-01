@@ -1,10 +1,13 @@
 import "./Popup.scss";
-
 import React, { useState } from "react";
-import popupTypes from "./PopupTypes";
+
+//Redux
 import { useSelector, useDispatch } from "react-redux";
 import { closePopup } from "../../state/actions";
+
+//Views
 import EditAccountView from "../editAccountView/EditAccountView";
+import popupTypes from "./PopupTypes";
 
 /**
  * This is the presentational component that presents different popup views according to the

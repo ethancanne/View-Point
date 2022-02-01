@@ -1,3 +1,4 @@
+import "./Auth.scss";
 import React, { useState } from "react";
 import Page from "../Page.js";
 
@@ -28,7 +29,7 @@ const Auth = props => {
   return (
     <Page>
       <div className='auth-page'>
-        <Page>{authView}</Page>
+        <div>{authView}</div>
       </div>
     </Page>
   );

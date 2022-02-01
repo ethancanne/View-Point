@@ -17,6 +17,14 @@ const notificationReducer = (state = { isShowing: false }, action) => {
         message: action.payload.message,
       };
 
+    case notificationConstants.SHOW_SUCCESS_NOTIFICATION:
+      return {
+        ...state,
+        type: notificationTypes.SUCCESS,
+        isShowing: true,
+        message: action.payload.message,
+      };
+
     case notificationConstants.HIDE_NOTIFICATION:
       return { ...state, isShowing: false };
 

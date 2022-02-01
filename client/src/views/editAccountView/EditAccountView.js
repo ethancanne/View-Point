@@ -1,9 +1,10 @@
+import "./EditAccountView.scss";
 import React, { useState } from "react";
 import axios from "axios";
 
-//Views
-import views from "../Views.js";
-import AuthView from "../authView/AuthView";
+//Core
+import Button from "../../core/button/Button";
+import ButtonTypes from "../../core/button/ButtonTypes";
 
 //Components
 import EditAccountForm from "../../components/editAccountForm/EditAccountForm";
@@ -19,6 +20,7 @@ import {
   showErrorNotification,
   closePopup,
   signOut,
+  showSuccessNotification,
 } from "../../state/actions";
 
 /**
@@ -47,8 +49,6 @@ const EditAccountView = props => {
    * @date   01/31/2022
    */
   const submitDeleteAccount = async () => {
-    dispatch(closePopup());
-
     // SUBMIT THE EDIT ACCOUNT REQUEST.
     let response;
     try {
@@ -73,7 +73,9 @@ const EditAccountView = props => {
           response.data.error
         );
         if (deleteAccountWasSuccessful) {
+          dispatch(closePopup());
           dispatch(signOut());
+          dispatch(showSuccessNotification(response.data.message));
         } else {
           dispatch(showErrorNotification(response.data.error));
           console.log(response.data.error);
@@ -139,6 +141,7 @@ const EditAccountView = props => {
               user,
             })
           );
+          dispatch(showSuccessNotification(response.data.message));
         } else {
           dispatch(showErrorNotification(response.data.error));
           console.log(response.data.error);
@@ -224,8 +227,7 @@ const EditAccountView = props => {
   };
 
   return (
-    <div>
-      <p>Edit your information</p>
+    <div className='edit-account-view'>
       <EditAccountForm
         email={email}
         firstName={firstName}
@@ -242,8 +244,13 @@ const EditAccountView = props => {
         updateStateField={updateStateField}
         updateZipCodeField={updateZipCodeField}
         submitEditAccount={submitEditAccount}
-        submitDeleteAccount={submitDeleteAccount}
       />
+      <Button
+        type={ButtonTypes.Destructive}
+        onClick={() => submitDeleteAccount()}
+        style={{ width: "96%" }}>
+        Delete Account
+      </Button>
     </div>
   );
 };

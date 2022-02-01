@@ -13,12 +13,10 @@ const userIsLoggedIn = Date.now() < jwtExpirationDate;
 var initialState = {};
 if (userIsLoggedIn && user) initialState = { isLoggedIn: true, user };
 else initialState = { isLoggedIn: false, user: {} };
-
-console.log(initialState);
 /**
  * This is the reducer for all actions relating to authentication
  * @param  {object} state The inital state of the reducer
- * @param  {String} action The action from userConstants that transforms the state into the next state
+ * @param  {String} action The action
  * @author Ethan Cannelongo
  * @date   01/30/2022
  */

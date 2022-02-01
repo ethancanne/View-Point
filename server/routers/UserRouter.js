@@ -350,11 +350,12 @@ class UserRouter {
     // }
 
     try {
-      const userWasDeleted = await req.user.delete();
+      const userWasDeleted = req.user.deactivateAccount();
+      const userWasSaved = await req.user.save();
 
-      if (!userWasDeleted) {
+      if (!userWasDeleted && !userWasSaved) {
         return res.send({
-          message: ResponseMessages.User.UserErrorDeleted,
+          error: ResponseMessages.User.UserErrorDeleted,
         });
       }
 

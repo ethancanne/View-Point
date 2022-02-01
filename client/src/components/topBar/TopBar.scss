@@ -1,0 +1,37 @@
+@import "../../globals.scss";
+
+.top-bar {
+  position: relative;
+  overflow: visible;
+  z-index: 122;
+  background-color: rgba(255, 255, 255, 0.164);
+  backdrop-filter: blur(20px);
+  transition: all 0.4s;
+  margin: 20px;
+  border-radius: 5px;
+
+  .wrapper {
+    padding: 10px 30px;
+    height: 3.7em;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    overflow-y: hidden;
+
+    .left {
+      h1 {
+        font-size: 20px;
+        padding-right: 20px;
+        color: white;
+      }
+      a {
+        text-decoration: none;
+      }
+    }
+    .right {
+      display: flex;
+      flex-direction: row;
+    }
+  }
+}

@@ -4,8 +4,7 @@
  * @date   10/20/2021
  */
 const popupTypes = {
-  EDIT_ACCOUNT: "EDIT_ACCOUNT",
-  CONFIRM_PASSWORD: "CONFIRM_PASSWORD",
+  EDIT_ACCOUNT: "Edit Your Information",
 };
 
 export default popupTypes;

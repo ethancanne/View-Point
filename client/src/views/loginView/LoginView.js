@@ -18,7 +18,12 @@ import Validator from "../../../../server/Validator.js";
 
 //Redux
 import { useDispatch } from "react-redux";
-import { signIn, signOut, showErrorNotification } from "../../state/actions";
+import {
+  signIn,
+  signOut,
+  showErrorNotification,
+  showSuccessNotification,
+} from "../../state/actions";
 /**
  * Used to display the login form and log the user in.
  * @param {function} clientSideLogin Used to log the user in from the client-side perspective.
@@ -59,7 +64,7 @@ const LoginView = props => {
         )
       );
     } finally {
-      const responseIsDefined = Validator.isDefined(response);
+      const responseIsDefined = Validator.isDefined(response.data);
       if (responseIsDefined) {
         // IF THE USER HAS LOGGED IN, CONFIGURE THE CLIENT TO REFLECT THIS.
         const loginWasSuccessful = Validator.isUndefined(response.data.error);
@@ -77,6 +82,8 @@ const LoginView = props => {
               user,
             })
           );
+          console.log(response.data.message);
+          dispatch(showSuccessNotification(response.data.message));
         } else {
           dispatch(showErrorNotification(response.data.error));
           dispatch(signOut);
@@ -128,7 +135,10 @@ const LoginView = props => {
 
       <div className='other-options'>
         <p>Don't have an account?</p>
-        <Button type={ButtonTypes.Creation} onClick={signUpClicked}>
+        <Button
+          type={ButtonTypes.Primary}
+          onClick={signUpClicked}
+          style={{ width: "97%" }}>
           Sign Up
         </Button>
       </div>

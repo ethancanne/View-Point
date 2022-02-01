@@ -31,6 +31,13 @@ export const showErrorNotification = message => {
   };
 };
 
+export const showSuccessNotification = message => {
+  return {
+    type: notificationConstants.SHOW_SUCCESS_NOTIFICATION,
+    payload: { message },
+  };
+};
+
 export const hideNotification = () => {
   return {
     type: notificationConstants.HIDE_NOTIFICATION,

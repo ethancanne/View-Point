@@ -1,4 +1,79 @@
-.input-field {
-}
+//Input Field
+@import "../globals.scss";
+
 .form {
+  .side-by-side {
+    display: flex;
+    justify-content: space-between;
+
+    & > * {
+      flex: 1;
+    }
+  }
+}
+.label {
+  color: white;
+  font-size: 11px;
+  padding-bottom: 10px;
+  font-weight: 600;
+  text-align: center;
+  width: 100%;
+}
+
+.input-field {
+  padding: 10px;
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  border: none;
+  overflow-x: visible;
+  color: white;
+
+  .label {
+    text-align: left;
+    font-size: 15px;
+    padding-bottom: 10px;
+  }
+  .input {
+    box-shadow: 0px 10px 10px rgba(128, 128, 128, 0.26);
+    padding: 10px;
+    border: none;
+    border-bottom: rgba(0, 0, 0, 0) 2px solid;
+    border-radius: 5px;
+    transition: all 0.2s;
+    background-color: rgba(255, 255, 255, 0.18);
+    color: white;
+  }
+  .input:focus {
+    border: none;
+    border-bottom: rgb(0, 0, 0) 2px solid;
+    background-color: rgba(255, 255, 255, 0.893);
+    outline-width: 0;
+    color: black;
+  }
+}
+
+.button {
+  box-shadow: 0px 2px 10px rgba(109, 109, 109, 0.096);
+  border: none;
+  color: white;
+
+  font-weight: 900;
+  text-align: center;
+
+  height: 2.5em;
+
+  margin: 10px;
+  padding: 0 30px 0 30px;
+  cursor: pointer;
+
+  &.button-primary {
+    background-color: $primary-button-color;
+  }
+  &.button-destructive {
+    background-color: $destructive-button-color;
+  }
+  &.button-creation {
+    background-color: $creation-button-color;
+  }
 }

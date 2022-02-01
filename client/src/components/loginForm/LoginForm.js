@@ -11,9 +11,9 @@ import TextInput from "../../core/inputs/TextInput";
  * Renders a login form.
  * @param {String} props.email The email address in the form.
  * @param {String} props.password The password in the form.
- * @param {function} props.submitLogin Used to submit the login form.
  * @param {function} props.updateEmailField The function used to update the email address.
  * @param {function} props.updatePasswordField The function used to update the password.
+ * @param {function} props.submitLogin Used to submit the login form.
  * @author Ethan Cannelongo
  * @date   01/30/2022
  */
@@ -37,7 +37,9 @@ const LoginForm = props => {
             type='password'
           />
         </InputField>
-        <Button type={ButtonTypes.Primary}>Sign in</Button>
+        <Button type={ButtonTypes.Creation} style={{ width: "97%" }}>
+          Sign in
+        </Button>
       </Form>
     </div>
   );

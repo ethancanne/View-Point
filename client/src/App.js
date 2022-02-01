@@ -92,7 +92,6 @@ const App = props => {
             );
           } else {
             dispatch(signOut());
-            //Dispatch Notification
           }
         }
       }

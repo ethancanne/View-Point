@@ -364,6 +364,7 @@ class User {
    */
   async save() {
     let userWasSaved = false;
+
     try {
       // GET THE DATABASE INSTANCE OF THE USER.
       let userModel = await UserModel.findOne({ _id: this._id }).exec();
@@ -373,6 +374,7 @@ class User {
 
       // SAVE THE UPDATED DATABASE INSTANCE.
       await userModel.save();
+
       userWasSaved = true;
     } catch (error) {
       console.log(
@@ -493,28 +495,9 @@ class User {
    */
   deactivateAccount() {
     this.isActive = false;
+    console.log("isActive", this.isActive);
     const isActiveSet = Validator.isDefined(this.isActive);
     return isActiveSet;
-  }
-  /**
-   * Deletes the user (Deactivates their account)
-   * @return {Boolean} True if the password was updated, false otherwise.
-   * @author Ethan Cannelongo
-   * @async
-   */
-  async delete() {
-    console.log("Deleting");
-    const userWasDeleted = false;
-    const userWasSaved = false;
-
-    try {
-      userWasDeleted = this.deactivateAccount();
-      userWasSaved = await this.save();
-    } catch {
-      return false;
-    } finally {
-      return userWasDeleted && userWasSaved;
-    }
   }
 }
 module.exports = User;
